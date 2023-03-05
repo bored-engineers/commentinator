@@ -1,0 +1,62 @@
+hr {
+  border-width: 1px 0px;
+  border-style: solid;
+  border-color: #e7e6e6;
+}
+.comment-form {
+  display: flex;
+  height: 100px;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 28px;
+  padding: 8px;
+  overflow-y: scroll;
+  height: var(--height);
+}
+
+.comment {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top > img {
+  border-radius: 100%;
+}
+
+.name-time {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-size: 1.25rem;
+}
+
+.time {
+  font-size: 0.75rem;
+}
+
+.bottom > span {
+  font-size: 0.875rem;
+}
