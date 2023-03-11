@@ -1,15 +1,17 @@
-import { Component, h, Host, Prop, State } from '@stencil/core';
+import { Component, getAssetPath, h, Host, Prop, State } from '@stencil/core';
 import firebase from 'firebase/compat/app';
 import { getAuth, signInWithPopup, GithubAuthProvider, setPersistence, browserLocalPersistence, signOut, User } from 'firebase/auth';
-import { getFirestore, getDocs, collection, query, where } from 'firebase/firestore';
+import { getFirestore, getDocs, collection, query, where, doc, setDoc } from 'firebase/firestore';
 import { Comment } from './types';
 import { getGithubUser } from './github-service';
+import { v4 as uuid } from 'uuid';
 
 declare var firebaseConfig: any;
 
 @Component({
   tag: 'comment-inator',
   styleUrl: 'comment-inator.css',
+  assetsDirs: ['assets'],
 })
 export class CommentInator {
   firebaseApp: firebase.app.App = firebase.initializeApp(firebaseConfig);
@@ -19,6 +21,7 @@ export class CommentInator {
   @State() showLoader: boolean = true;
   @State() user: User & { username: string };
   @State() comments: Comment[] = [];
+  @State() currentCommentText = '';
 
   @Prop() height: string;
   @Prop() groupId: string;
@@ -26,10 +29,10 @@ export class CommentInator {
   async componentDidLoad() {
     this.auth.onAuthStateChanged(async user => {
       this.user = user ? { ...user, username: (await getGithubUser(user.providerData[0].uid)).username } : null;
-      this.showLoader = false;
     });
 
     const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId)));
+
     this.comments = await Promise.all(
       querySnapshot.docs.map(async doc => {
         const comment = doc.data();
@@ -39,13 +42,14 @@ export class CommentInator {
     );
   }
 
-  // onPostCommentClickHandler = async (text) => {
-  //   await setDoc(doc(this.firestore, 'blog-comments', uuid()), {
-  //     text: text,
-  //     collectionId: '1',
-  //     githubId: this.user.providerData[0].uid,
-  //   });
-  // };
+  onPostCommentClickHandler = async () => {
+    if(!this.currentCommentText) return;
+    await setDoc(doc(this.firestore, 'blog-comments', uuid()), {
+      text: this.currentCommentText,
+      groupId: this.groupId,
+      githubId: this.user.providerData[0].uid,
+    });
+  };
 
   onLoginClickHandler = () => {
     setPersistence(this.auth, browserLocalPersistence)
@@ -59,27 +63,34 @@ export class CommentInator {
       .catch(e => console.error(e));
   };
 
+  onInputHandler = e => {
+    this.currentCommentText = e.target.value;
+  };
+
   render() {
     console.log('rendering');
-
     return (
       <Host>
         <div class="comment-form">
           {!this.user && (
             <div class="login">
               <span>Please sign in using following method to post comments</span>
-              <button type="button" class="main" onClick={this.onLoginClickHandler}>
-                Github
+              <button type="button" class="login-button" onClick={this.onLoginClickHandler}>
+                <img src={getAssetPath(`./assets/github-logo.svg`)} />
               </button>
             </div>
           )}
           {this.user && (
-            <div class="login">
+            <div class="comment-form-area">
               <div class="top">
                 <img src={this.user.photoURL} width="48" height="48" />
                 <div class="name-time">
                   <span class="name">{this.user.displayName || this.user.username}</span>
                 </div>
+              </div>
+              <div class="box">
+                <textarea value={this.currentCommentText} onInput={e => this.onInputHandler(e)} maxlength="300" />
+                <button onClick={this.onPostCommentClickHandler}>Post</button>
               </div>
             </div>
           )}

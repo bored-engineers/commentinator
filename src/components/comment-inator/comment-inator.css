@@ -5,7 +5,21 @@ hr {
 }
 .comment-form {
   display: flex;
-  height: 100px;
+}
+
+.login-button {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.login-button > img {
+  width: 3rem;
+  aspect-ratio: 1;
 }
 
 .login {
@@ -15,6 +29,25 @@ hr {
   justify-content: center;
   width: 100%;
   gap: 8px;
+}
+.comment-form-area{
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.box{
+  width: 100%;
+}
+
+.box > textarea {
+  width: 100%;
+  height: 5rem;
+  resize: none;
+}
+.box > button {
+  float: right;
 }
 
 .comments {
