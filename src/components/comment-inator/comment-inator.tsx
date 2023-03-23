@@ -31,24 +31,18 @@ export class CommentInator {
       this.user = user ? { ...user, username: (await getGithubUser(user.providerData[0].uid)).username } : null;
     });
 
-    const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId)));
-
-    this.comments = await Promise.all(
-      querySnapshot.docs.map(async doc => {
-        const comment = doc.data();
-        const { username, name, imageUrl } = await getGithubUser(comment.githubId);
-        return { username, name, imageUrl, text: comment.text, id: doc.id };
-      }),
-    );
+    await this.fetchAllComments();
   }
 
   onPostCommentClickHandler = async () => {
-    if(!this.currentCommentText) return;
+    if (!this.currentCommentText) return;
     await setDoc(doc(this.firestore, 'blog-comments', uuid()), {
       text: this.currentCommentText,
       groupId: this.groupId,
       githubId: this.user.providerData[0].uid,
     });
+    this.currentCommentText = '';
+    await this.fetchAllComments();
   };
 
   onLoginClickHandler = () => {
@@ -67,6 +61,18 @@ export class CommentInator {
     this.currentCommentText = e.target.value;
   };
 
+  fetchAllComments = async () => {
+    const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId)));
+
+    this.comments = await Promise.all(
+      querySnapshot.docs.map(async doc => {
+        const comment = doc.data();
+        const { username, name, imageUrl } = await getGithubUser(comment.githubId);
+        return { username, name, imageUrl, text: comment.text, id: doc.id };
+      }),
+    );
+  };
+
   render() {
     console.log('rendering');
     return (
@@ -83,14 +89,23 @@ export class CommentInator {
           {this.user && (
             <div class="comment-form-area">
               <div class="top">
-                <img src={this.user.photoURL} width="48" height="48" />
-                <div class="name-time">
-                  <span class="name">{this.user.displayName || this.user.username}</span>
+                <div class="top-left">
+                  <img src={this.user.photoURL} width="48" height="48" />
+                  <div class="name-time">
+                    <span class="name">{this.user.displayName || this.user.username}</span>
+                  </div>
+                </div>
+                <div class="top-right">
+                  <button class="setting-button">
+                    <img src={getAssetPath(`./assets/settings.svg`)} />
+                  </button>
                 </div>
               </div>
               <div class="box">
                 <textarea value={this.currentCommentText} onInput={e => this.onInputHandler(e)} maxlength="300" />
-                <button onClick={this.onPostCommentClickHandler}>Post</button>
+                <button class="post" onClick={this.onPostCommentClickHandler}>
+                  Post
+                </button>
               </div>
             </div>
           )}
@@ -101,10 +116,12 @@ export class CommentInator {
             return (
               <div class="comment" id={comment.id}>
                 <div class="top">
-                  <img src={comment.imageUrl} width="48" height="48" />
-                  <div class="name-time">
-                    <span class="name">{comment.name || comment.username}</span>
-                    <span class="time">2 Days Ago</span>
+                  <div class="top-left">
+                    <img src={comment.imageUrl} width="48" height="48" />
+                    <div class="name-time">
+                      <span class="name">{comment.name || comment.username}</span>
+                      <span class="time">2 Days Ago</span>
+                    </div>
                   </div>
                 </div>
                 <div class="bottom">
