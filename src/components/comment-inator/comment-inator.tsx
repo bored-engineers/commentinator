@@ -96,8 +96,8 @@ export class CommentInator {
                   </div>
                 </div>
                 <div class="top-right">
-                  <button class="setting-button">
-                    <img src={getAssetPath(`./assets/settings.svg`)} />
+                  <button class="setting-button" onClick={this.onLogoutClickHandler} aria-label="logout" data-cooltipz-dir="bottom-right">
+                    <img alt="logout" src={getAssetPath(`./assets/logout.svg`)} />
                   </button>
                 </div>
               </div>
