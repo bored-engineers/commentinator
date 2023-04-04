@@ -4,4 +4,5 @@ export type Comment = {
   name: string;
   imageUrl: string;
   id: string;
+  createdAt: Date
 };

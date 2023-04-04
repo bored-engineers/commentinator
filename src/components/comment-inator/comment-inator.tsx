@@ -1,10 +1,11 @@
 import { Component, getAssetPath, h, Host, Prop, State } from '@stencil/core';
 import firebase from 'firebase/compat/app';
 import { getAuth, signInWithPopup, GithubAuthProvider, setPersistence, browserLocalPersistence, signOut, User } from 'firebase/auth';
-import { getFirestore, getDocs, collection, query, where, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, getDocs, collection, query, where, doc, setDoc, orderBy } from 'firebase/firestore';
 import { Comment } from './types';
 import { getGithubUser } from './github-service';
 import { v4 as uuid } from 'uuid';
+import formatTimeAgo from './utils/time.util';
 
 declare var firebaseConfig: any;
 
@@ -13,7 +14,6 @@ declare var firebaseConfig: any;
   styleUrl: 'comment-inator.css',
   assetsDirs: ['assets'],
 })
-
 export class CommentInator {
   firebaseApp: firebase.app.App = firebase.initializeApp(firebaseConfig);
   auth = getAuth(this.firebaseApp);
@@ -28,12 +28,12 @@ export class CommentInator {
   @Prop() groupId: string;
 
   fetchAllComments = async () => {
-    const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId)));
+    const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId), orderBy('createdAt', 'desc')));
     this.comments = await Promise.all(
       querySnapshot.docs.map(async doc => {
         const comment = doc.data();
         const { username, name, imageUrl } = await getGithubUser(comment.githubId);
-        return { username, name, imageUrl, text: comment.text, id: doc.id };
+        return { username, name, imageUrl, text: comment.text, id: doc.id, createdAt: comment.createdAt };
       }),
     );
   };
@@ -52,6 +52,7 @@ export class CommentInator {
       text: this.currentCommentText,
       groupId: this.groupId,
       githubId: this.user.providerData[0].uid,
+      createdAt: Date.now(),
     });
     this.currentCommentText = '';
     await this.fetchAllComments();
@@ -120,7 +121,7 @@ export class CommentInator {
                     <img src={comment.imageUrl} width="48" height="48" />
                     <div class="name-time">
                       <span class="name">{comment.name || comment.username}</span>
-                      <span class="time">2 Days Ago</span>
+                      <span class="time">{formatTimeAgo(comment.createdAt)}</span>
                     </div>
                   </div>
                 </div>

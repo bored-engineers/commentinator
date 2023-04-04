@@ -32,3 +32,7 @@ To use this library -
     <comment-inator group-id="<your group id>" height="<height for component>"/>
     ```
 
+
+
+## Firebase Configurations
+- You have to add index to get the comments in 'Recent First' order. To do that run the code, go into console and there will be a link to create the indexes or It can be done manualy from firebase console.
