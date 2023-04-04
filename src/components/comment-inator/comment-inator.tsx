@@ -13,6 +13,7 @@ declare var firebaseConfig: any;
   styleUrl: 'comment-inator.css',
   assetsDirs: ['assets'],
 })
+
 export class CommentInator {
   firebaseApp: firebase.app.App = firebase.initializeApp(firebaseConfig);
   auth = getAuth(this.firebaseApp);
@@ -25,6 +26,17 @@ export class CommentInator {
 
   @Prop() height: string;
   @Prop() groupId: string;
+
+  fetchAllComments = async () => {
+    const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId)));
+    this.comments = await Promise.all(
+      querySnapshot.docs.map(async doc => {
+        const comment = doc.data();
+        const { username, name, imageUrl } = await getGithubUser(comment.githubId);
+        return { username, name, imageUrl, text: comment.text, id: doc.id };
+      }),
+    );
+  };
 
   async componentDidLoad() {
     this.auth.onAuthStateChanged(async user => {
@@ -59,18 +71,6 @@ export class CommentInator {
 
   onInputHandler = e => {
     this.currentCommentText = e.target.value;
-  };
-
-  fetchAllComments = async () => {
-    const querySnapshot = await getDocs(query(collection(this.firestore, 'blog-comments'), where('groupId', '==', this.groupId)));
-
-    this.comments = await Promise.all(
-      querySnapshot.docs.map(async doc => {
-        const comment = doc.data();
-        const { username, name, imageUrl } = await getGithubUser(comment.githubId);
-        return { username, name, imageUrl, text: comment.text, id: doc.id };
-      }),
-    );
   };
 
   render() {

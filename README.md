@@ -10,10 +10,6 @@ To use this library -
             apiKey: '',
             authDomain: '',
             projectId: '',
-            storageBucket: '',
-            messagingSenderId: '',
-            appId: '',
-            measurementId: '',
           };
         </script>
         <script type="module" src="/build/commentinator.esm.js"></script>
