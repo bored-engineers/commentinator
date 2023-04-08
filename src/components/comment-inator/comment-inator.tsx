@@ -14,7 +14,6 @@ declare var commentinatorConfig: IConfig;
   styleUrl: 'comment-inator.css',
   assetsDirs: ['assets'],
 })
-
 export class CommentInator {
   firebaseApp: firebase.app.App = firebase.initializeApp(commentinatorConfig.firebase);
   auth = getAuth(this.firebaseApp);
@@ -28,9 +27,9 @@ export class CommentInator {
   @Prop() height: string;
   @Prop() groupId: string;
 
-  fetchAllComments = async () => {
+  getComments = async (): Promise<IComment[]> => {
     const querySnapshot = await getDocs(query(collection(this.firestore, commentinatorConfig.collectionName), where('groupId', '==', this.groupId), orderBy('createdAt', 'desc')));
-    this.comments = await Promise.all(
+    return Promise.all(
       querySnapshot.docs.map(async doc => {
         const comment = doc.data();
         const { username, name, imageUrl } = await getGithubUser(comment.githubId);
@@ -39,24 +38,28 @@ export class CommentInator {
     );
   };
 
-  async componentDidLoad() {
-    this.auth.onAuthStateChanged(async user => {
-      this.user = user ? { ...user, username: (await getGithubUser(user.providerData[0].uid)).username } : null;
-    });
-
-    await this.fetchAllComments();
-  }
-
-  onPostCommentClickHandler = async () => {
-    if (!this.currentCommentText) return;
+  saveComment = async () => {
     await setDoc(doc(this.firestore, commentinatorConfig.collectionName, uuid()), {
       text: this.currentCommentText,
       groupId: this.groupId,
       githubId: this.user.providerData[0].uid,
       createdAt: Date.now(),
     });
+  };
+
+  async componentDidLoad() {
+    this.auth.onAuthStateChanged(async user => {
+      this.user = user ? { ...user, username: (await getGithubUser(user.providerData[0].uid)).username } : null;
+    });
+
+    this.comments = await this.getComments();
+  }
+
+  onPostCommentClickHandler = async () => {
+    if (!this.currentCommentText) return;
+    await this.saveComment();
     this.currentCommentText = '';
-    await this.fetchAllComments();
+    await this.getComments();
   };
 
   onLoginClickHandler = () => {
