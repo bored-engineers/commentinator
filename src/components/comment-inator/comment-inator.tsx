@@ -7,7 +7,7 @@ import { getGithubUser } from './github-service';
 import { v4 as uuid } from 'uuid';
 import formatTimeAgo from './utils/time.util';
 
-declare var config: IConfig;
+declare var commentinatorConfig: IConfig;
 
 @Component({
   tag: 'comment-inator',
@@ -16,7 +16,7 @@ declare var config: IConfig;
 })
 
 export class CommentInator {
-  firebaseApp: firebase.app.App = firebase.initializeApp(config.firebase);
+  firebaseApp: firebase.app.App = firebase.initializeApp(commentinatorConfig.firebase);
   auth = getAuth(this.firebaseApp);
   firestore = getFirestore(this.firebaseApp);
 
@@ -29,7 +29,7 @@ export class CommentInator {
   @Prop() groupId: string;
 
   fetchAllComments = async () => {
-    const querySnapshot = await getDocs(query(collection(this.firestore, config.collectionName), where('groupId', '==', this.groupId), orderBy('createdAt', 'desc')));
+    const querySnapshot = await getDocs(query(collection(this.firestore, commentinatorConfig.collectionName), where('groupId', '==', this.groupId), orderBy('createdAt', 'desc')));
     this.comments = await Promise.all(
       querySnapshot.docs.map(async doc => {
         const comment = doc.data();
@@ -49,7 +49,7 @@ export class CommentInator {
 
   onPostCommentClickHandler = async () => {
     if (!this.currentCommentText) return;
-    await setDoc(doc(this.firestore, config.collectionName, uuid()), {
+    await setDoc(doc(this.firestore, commentinatorConfig.collectionName, uuid()), {
       text: this.currentCommentText,
       groupId: this.groupId,
       githubId: this.user.providerData[0].uid,
