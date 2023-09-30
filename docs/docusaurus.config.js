@@ -19,7 +19,7 @@ const config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
-
+  staticDirectories: ['static'],
   presets: [
     [
       'classic',
@@ -27,17 +27,8 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/bored-engineers/commentinator/tree/dev/docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -49,8 +40,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
       navbar: {
         title: 'Commentinator',
         items: [
@@ -63,7 +52,7 @@ const config = {
       },
       footer: {
         style: 'dark',
-        copyright: `Built with Docusaurus.`,
+        copyright: `All Rights researved. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

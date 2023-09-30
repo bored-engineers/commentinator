@@ -14,7 +14,7 @@ const FeatureList = [
   },
   {
     title: 'Cost Effective',
-    Svg: require('@site/static/img/cost-effective.svg').default,
+    Svg: require('@site/static/img/cost-effective-circle.svg').default,
     description: (
       <>
         Commentinator is based on serverless principal, hence it is very cost effective and allows you to pay as you go.
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'Powered by Firebase',
-    Svg: require('@site/static/img/Firebase-firestore-db.svg').default,
+    Svg: require('@site/static/img/Firebase-firestore-db-circle.svg').default,
     description: (
       <>
         Commentinator's uses firebase firestore database, which is easy to configure, maintain and monitor.
