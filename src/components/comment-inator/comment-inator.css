@@ -1,0 +1,137 @@
+@import url('https://cdn.jsdelivr.net/npm/cooltipz-css/cooltipz.min.css');
+
+hr {
+  border-width: 1px 0px;
+  border-style: solid;
+  border-color: #e7e6e6;
+}
+.comment-form {
+  display: flex;
+}
+
+.login-button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.login-button > img {
+  width: 3rem;
+  aspect-ratio: 1;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.comment-form-area {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.box {
+  width: 100%;
+}
+
+.box > textarea {
+  width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: fill-available;
+  height: 5rem;
+  resize: none;
+}
+
+.box > button {
+  float: right;
+  background-color: #2977eb;
+  color: white;
+  width: 5rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 28px;
+  padding: 8px;
+  overflow-y: scroll;
+  height: var(--height);
+}
+
+.comment {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-left > img {
+  border-radius: 100%;
+}
+
+.top-right {
+  display: flex;
+}
+
+.top-right > button {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.top-right > button > img {
+  transform: rotate(-90deg);
+}
+
+.name-time {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-size: 1.25rem;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: #333;
+}
+
+.bottom > span {
+  font-size: 0.875rem;
+}
+
+.tooltip {
+  display: inline-block;
+  position: relative;
+  border-bottom: 1px dotted #666;
+  text-align: left;
+}
