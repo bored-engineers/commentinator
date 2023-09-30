@@ -1,3 +1,7 @@
+---
+title: Getting Started
+---
+
 # Commentinator
 
 Commentinator is a lightweight, open-source library designed for adding comments functionality to static websites, blogs, portfolios, articles, and even product websites. It is built on top of Firebase Authentication and Firestore Database, making it easy to use and reliable.
@@ -61,9 +65,3 @@ To use Commentinator, you need to provide following configurations -
     allow write: if request.auth.token.firebase.identities['github.com'][0] == request.resource.data.githubId;
     ```
 8. Once your security rules are in place, create an index in your Firestore database. To do this, run your code locally and look for the following error in the console: `FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/....` Click on the link provided to create the index automatically. Once the index is created, you're ready to start using Commentinator!
-
-Todos
-## running in local
-## Contributing
-## Code of Conduct
-## License
